@@ -1,0 +1,34 @@
+extends setting_layout
+
+block content_setting
+    form#form_subscribe(method='post', action='/setting?type=subscribe&section=subscribe', class='form-horizontal')
+        div(class='control-group')
+            label(class='control-label', for='user_id') User:
+            div(class='controls')
+                select#user_id(class='span4', name='user_id')
+                    - for (var i = 0; i < users.length; ++i)
+                        - var p = users[i];
+                        option(value=p.id) #{p.display_name}
+        div(class='control-group')
+            label(class='control-label', for='product_id') Product:
+            div(class='controls')
+                select#product_id(class='span4', name='product_id')
+                    - for (var i = 0; i < products.length; ++i)
+                        - var p = products[i];
+                        option(value=p.id) #{p.name}
+        div(class='control-group')
+            label(class='control-label', for='role') Role:
+            div(class='controls')
+                select#role(class='span4', name='role')
+                    option(value='admin') admin
+                    option(value='member') member
+                    option(value='guest') guest
+        div(class='control-group')
+            div(class='controls')
+                button(class='btn btn-small btn-primary', type='submit', onclick='xhrSetting("subscribe")') Subscribe
+                span#res_subscribe(class='label label-success', style='margin-left:10px; opacity:0') success
+
+    script
+        var role = '#{cookie["role"]}'
+        if ('admin' != role)
+            $('button').attr('disabled', 'disabled');

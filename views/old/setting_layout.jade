@@ -1,0 +1,33 @@
+extends layout
+
+block header
+    link(rel='stylesheet', href='/stylesheets/prj.css')
+    link(rel='stylesheet', href='/stylesheets/datepicker.css')
+    script(type='text/javascript', src='/javascripts/bootstrap-datepicker.js')
+    script(type='text/javascript', src='/javascripts/wave.js')
+
+block content
+    script(const_type='text/javascript')
+        setActive('#tab_setting');
+    div(class='container-fluid')
+        div(class='row-fluid')
+            div(class='span2')
+                div(class='well sidebar-nav')
+                    ul(class='nav nav-list')
+                        li(class='nav-header') System Setting
+                        li#user
+                            a(href='/project/setting?type=user') User
+                        li#product
+                            a(href='/project/setting?type=product') Product
+                        li#subscribe
+                            a(href='/project/setting?type=subscribe') Subscribe
+                        li(class='nav-header') Personal
+                        li#account
+                            a(href='/project/setting?type=account&sub_type=update') Account
+                        script(type='text/javascript')
+                            var type = '#{type}'
+                            $('#'+type).attr('class', 'active');
+                            
+            div(class='span10')
+                div(class='container')
+                    block content_setting

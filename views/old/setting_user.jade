@@ -1,0 +1,28 @@
+extends setting_layout
+
+block content_setting
+    form#form_add_user(method='post', action='/setting?type=user&section=add', class='form-horizontal')
+        div(class='control-group')
+            label(class='control-label', for='login_name') Login name:
+            div(class='controls')
+                input#login_name(type='text', class='input-middle', name='login_name')
+        div(class='control-group')
+            label(class='control-label', for='display_name') Display name:
+            div(class='controls')
+                input#display_name(type='text', class='input-middle', name='display_name')
+        div(class='control-group')
+            label(class='control-label', for='role') Role:
+            div(class='controls')
+                select(class='span2', name='role')
+                    option(value='guest') Guest
+                    option(value='qa') QA
+                    option(value='tl') TL
+                    option(value='admin') Admin
+        div(class='control-group')
+            div(class='controls')
+                button(class='btn btn-small btn-primary', type='submit', onclick='xhrSetting("add_user")') Add
+                span#res_add_user(class='label label-success', style='margin-left:10px; opacity:0') success
+    script
+        var role = '#{cookie["role"]}'
+        if ('admin' != role)
+            $('button').attr('disabled', 'disabled');

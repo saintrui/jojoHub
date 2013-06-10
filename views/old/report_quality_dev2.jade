@@ -1,0 +1,33 @@
+extends report_graph_layout
+
+block content
+    p(class='text-success') Table 1. List of Projects:
+    table(class='table table-bordered table-hover')
+        thead
+            tr
+                td Project
+                td Version
+                td Type
+                td Bug # 
+                td Block Bug # 
+                td Critical Bug # 
+                td Pkg Times
+                td Pkg Reason
+                td Low Value Bugs
+        tbody
+            - for (var i = 0; i < prjs.length; ++i)
+                - var p = prjs[i];
+                    tr
+                        td #{p.name}
+                        td
+                            - if (p.review_pass)
+                                a(target='_blank', href='/project/show?type=finish&prj=' + p.prj_id) #{p.version}
+                            - else
+                                a(target='_blank', href='/project/show?type=unfinish&prj=' + p.prj_id) #{p.version}
+                        td #{p.version_type}
+                        td #{p.bugs}
+                        td #{p.blocker_bugs}
+                        td #{p.critical_bugs}
+                        td #{p.pkg_times}
+                        td #{p.pkg_reason}
+                        td #{p.low_value_bugs}

@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    div(class='container-fluid')
+        div(class='row-fluid')
+            div(class='span9')
+                div(class='hero-unit', style='padding:10px')
+                    p(class='lead label-warning') Review requests:
+                    - if (!prjs.length)
+                        span(class='text-success') No requests.
+                    - else
+                        ol
+                            - for (var i = 0; i < prjs.length; ++i)
+                                - var prj = prjs[i]
+                                - var rrd = new Date(prj.review_req_date)
+                                - var rrd_str = '' + rrd.getFullYear() + '-' + (rrd.getMonth() + 1) + '-' + rrd.getDate();
+                                li
+                                    a(href='/project/show?type=unfinish&prj=' + prj.id) #{prj.name} #{prj.version}
+                                    span(style='margin-left:20px') Request at #{rrd_str}
+                                    span(style='margin-left:20px') Requester #{prj.requester}

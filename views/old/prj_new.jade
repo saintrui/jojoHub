@@ -1,0 +1,46 @@
+extends layout
+
+block content
+    script(type='text/javascript')
+        setActive('#tab_new_prj');
+    div(class='container-fluid')
+        div(class='row-fluid')
+            div(class='span9')
+                div(class='hero-unit', style='padding:0;')
+                    form(method='post', action='/project/new', class='form-horizontal')
+                        div(class='control-group')
+                            label(class='control-label', for='project') Project Name:
+                            div(class='controls')
+                                select#project(class='span3',name='prj_id') 
+                                    - for (var i = 0; i < products.length; ++i)
+                                        option(value='#{products[i].id}') #{products[i].name}
+                        div(class='control-group')
+                            label(class='control-label', for='version') Version:
+                            div(class='controls')
+                                select#version(class='span1',name='v1') 
+                                    - for (var i = 0; i < 20; ++i)
+                                        option(value='#{i}') #{i}
+                                .
+                                select#version(class='span1',name='v2') 
+                                    - for (var i = 0; i < 20; ++i)
+                                        option(value='#{i}') #{i}
+                                .
+                                select#version(class='span1',name='v3') 
+                                    - for (var i = 0; i < 20; ++i)
+                                        option(value='#{i}') #{i}
+                                .
+                                select#version(class='span1',name='v4') 
+                                    - for (var i = 0; i < 20; ++i)
+                                        option(value='#{i}') #{i}
+                                select#version(class='span2',name='v5') 
+                                    option(value='') 
+                                    option(value='a') a
+                                    option(value='b') b
+                                    option(value='c') c
+                                    option(value='ab') ab
+                                    option(value='ac') ac
+                                    option(value='bc') bc
+                                    option(value='abc') abc
+                        div(class='control-group')
+                            div(class='controls')
+                                button(class='btn btn-small btn-primary', type='submit') New

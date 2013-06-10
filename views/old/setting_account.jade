@@ -1,0 +1,22 @@
+extends setting_layout
+
+block content_setting
+    form#form_update_account(method='post', action='/setting?type=account&section=update', class='form-horizontal')
+        div(class='control-group')
+            label(class='control-label', for='old_passwd') Old password:
+            div(class='controls')
+                input#old_passwd(type='password', class='input-middle', name='old_passwd')
+        div(class='control-group')
+            label(class='control-label', for='new_passwd') New password:
+            div(class='controls')
+                input#new_passwd(type='password', class='input-middle', name='new_passwd')
+        div(class='control-group')
+            label(class='control-label', for='confirm_passwd') Confirm password:
+            div(class='controls')
+                input#confirm_passwd(type='password', class='input-middle', name='confirm_passwd')
+                span#prompt(style='margin-left:10px; opacity:0')
+
+        div(class='control-group')
+            div(class='controls')
+                button(class='btn btn-small btn-primary', type='submit', onclick='xhrSetting("update_account")') Update
+                span#res_update_account(class='label label-success', style='margin-left:10px; opacity:0') success

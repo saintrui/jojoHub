@@ -1,0 +1,30 @@
+extends layout
+
+block header
+    link(rel='stylesheet', href='/stylesheets/prj.css')
+    link(rel='stylesheet', href='/stylesheets/datepicker.css')
+    script(type='text/javascript', src='/javascripts/bootstrap-datepicker.js')
+
+block content
+    script(const_type='text/javascript')
+        setActive('#tab_report');
+    div(class='container-fluid')
+        div(class='row-fluid')
+            div(class='span2')
+                div(class='well sidebar-nav')
+                    ul(class='nav nav-list')
+                        li(class='nav-header') Release Report
+                        li#by_time
+                            a(href='/project/report?type=release&sub_type=by_time') By Month
+                        li(class='nav-header') Quality Report
+                        li#qa
+                            a(href='/project/report?type=quality&sub_type=qa') QA Quality
+                        li#dev
+                            a(href='/project/report?type=quality&sub_type=dev') Dev Quality
+                        script(type='text/javascript')
+                            var sub_type = '#{sub_type}'
+                            $('#'+sub_type).attr('class', 'active');
+                            
+            div(class='span10')
+                div(class='container')
+                    block content_report

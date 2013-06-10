@@ -1,0 +1,27 @@
+extends layout
+
+block content
+    div(class='container-fluid')
+        div(class='row-fluid')
+            div(class='span9')
+                form#form_feedback_update(method='post', action='/feedback/update', class='form-horizontal')
+                    input(type='hidden', name='id', value=feedback.id)
+                    div(class='control-group')
+                        label(class='control-label', for='subject') Subject:
+                        div(class='controls')
+                            input#subject(type='text', class='input-xxlarge', name='subject', value=feedback.subject)
+                    div(class='control-group')
+                        label(class='control-label', for='desc') 顶/拍:
+                        div(class='controls')
+                            textarea#desc(rows='8', class='input-xxlarge',  name='desc') .
+                                #{feedback.description}
+                    div(class='control-group')
+                        div(class='controls')
+                            button(class='btn btn-small btn-primary', type='submit', onclick='xhrFeedback("feedback_update");') Update
+                            span#res_feedback_update(class='label label-success', style='margin-left:10px; opacity:0') success
+                form#form_feedback_del(method='post', action='/feedback/delete', class='form-horizontal')
+                    input(type='hidden', name='id', value=feedback.id)
+                    div(class='control-group')
+                        div(class='controls')
+                            button(class='btn btn-small btn-primary', type='submit', onclick='xhrFeedback("feedback_del");') Delete
+                            span#res_feedback_del(class='label label-success', style='margin-left:10px; opacity:0') success

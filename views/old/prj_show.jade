@@ -1,0 +1,801 @@
+extends layout
+
+block header
+    link(rel='stylesheet', href='/stylesheets/prj.css')
+    link(rel='stylesheet', href='/stylesheets/datepicker.css')
+    script(type='text/javascript', src='/javascripts/bootstrap-datepicker.js')
+    style(type='text/css')
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+block content
+    - var prj_role = '';
+    script
+        var now_tmp = new Date();
+        var now = new Date(now_tmp.getFullYear(), now_tmp.getMonth(), now_tmp.getDate(), 0, 0, 0, 0);
+        
+    - var now_tmp = new Date();
+    - var now_date1 = '' + now_tmp.getFullYear() + (now_tmp.getMonth() + 1) + now_tmp.getDate();
+    - var now_date2 = '' + now_tmp.getFullYear() + '-' + (now_tmp.getMonth() + 1) + '-' + now_tmp.getDate();
+
+    - if (const_type == 'unfinish')
+        script(const_type='text/javascript')
+            setActive('#tab_unfinish');
+    - else
+        script(const_type='text/javascript')
+            setActive('#tab_finish');
+
+    - if (projects.length)
+        div(class='container-fluid')
+            div(class='row-fluid')
+                div(class='span2')
+                    div(class='well sidebar-nav')
+                        ul(class='nav nav-list')
+                            - var last_name = '';
+                            - for (var i = 0; i < projects.length; ++i)
+                                - var prj = projects[i];
+                                - if (last_name != prj.name)
+                                    - last_name = prj.name;
+                                    li(class='nav-header') #{prj.name}
+                                - if (prj.id == const_prj_info.id)
+                                    - prj_role = prj.role
+                                    li(class='active')
+                                        a(href='/project/show?type=' + const_type + '&prj=' + prj.id) #{prj.version}
+                                - else
+                                    li
+                                        a(href='/project/show?type=' + const_type + '&prj=' + prj.id) #{prj.version}
+                - if (const_prj_info.version_type == 4)
+                    div(class='span10')
+                        div(class='container')
+                            div(class='row')
+                                div(class='span10')
+                                    section
+                                        div(class='page-header')
+                                            h1(class='text-success') TC
+                                        form#form_patch_tc(method='post', action='/project/update?section=patch_tc', class='form-horizontal')
+                                            - if (const_prj_info.version.indexOf('a') != -1)
+                                                div(class='control-group')
+                                                    label(class='control-label', for='patch_prd') PRD:
+                                                    div(class='controls')
+                                                        input#patch_prd(type='text', class='input-xxlarge', name='prd', value=const_prj_info.prd_url)
+                                            - if (const_prj_info.version.indexOf('a') != -1 || const_prj_info.version.indexOf('b') != -1)
+                                                div(class='control-group')
+                                                    label(class='control-label', for='patch_add_case') Add test case:
+                                                    div(class='controls')
+                                                        textarea#patch_add_case(rows='3', class='input-xxlarge',  name='test_case') .
+                                                            #{const_prj_info.test_case}
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_bugs') Valid bug #:
+                                                div(class='controls')
+                                                    input#patch_bugs(type='number', class='input-mini', name='bugs', value=const_prj_info.bugs)
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_blocker_bugs') Blocker bug #:
+                                                div(class='controls')
+                                                    input#patch_blocker_bugs(type='number', class='input-mini', name='blocker_bugs', value=const_prj_info.blocker_bugs)
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_critical_bugs') Critical bug #:
+                                                div(class='controls')
+                                                    input#patch_critical_bugs(type='number', class='input-mini', name='critical_bugs', value=const_prj_info.critical_bugs)
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_low_value_bugs') Low value bug #:
+                                                div(class='controls')
+                                                    textarea#patch_low_value_bugs(rows='6', class='input-xxlarge',  name='low_value_bugs') .
+                                                        #{const_prj_info.low_value_bugs}
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_pkg_times') Package times:
+                                                div(class='controls')
+                                                    input#patch_pkg_times(type='number', class='input-mini', name='pkg_times', value=const_prj_info.pkg_times)
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_pkg_reason') Package reason:
+                                                div(class='controls')
+                                                    textarea#patch_pkg_reason(rows='4', class='input-xxlarge',  name='pkg_reason') .
+                                                        #{const_prj_info.pkg_reason}
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_test_report') Test report:
+                                                div(class='controls')
+                                                    input#patch_test_report(type='text', class='input-xxlarge', name='test_report', value=const_prj_info.test_report_url)
+                                            - if (const_prj_info.version.indexOf('b') != -1)
+                                                div(class='control-group')
+                                                    label(class='control-label', for='patch_reason') Bug not found reason:
+                                                    div(class='controls')
+                                                        textarea#patch_reason(rows='6', class='input-xxlarge',  name='reason') .
+                                                            #{const_prj_info.reason}
+                                            - if ('admin' == cookie.role)
+                                                div(class='control-group')
+                                                    label(class='control-label', for='patch_modify_tc_date') TC date:
+                                                    div(class='controls')
+                                                        - var dt = const_prj_info.tc_date;
+                                                        - var tmp_date = '';
+                                                        - if (dt != null && !isNaN(dt.getFullYear()))
+                                                            - tmp_date = '' + dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
+                                                        input#patch_modify_tc_date(type='text', class='input-small', name='tc_date', value=tmp_date)
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("patch_tc", #{const_prj_info.id});') Update
+                                                    span#res_patch_tc(class='label label-success', style='margin-left:10px; opacity:0') success
+
+                                        form(class='form-horizontal')
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    div(class='btn-group')
+                                                        button(class='btn btn-small btn-primary', type='button', onclick='$("#modal_patch_tc").modal("show");') Send TC
+                                        div#modal_patch_tc(class='modal hide fade', style='width:800px;')
+                                            div(class='modal-header')
+                                                button#close_btn_patch_tc_mail(type='button', class='close', data-dismiss='modal', aria-hidden='true') &times;
+                                                h3 TC
+                                            div(class='modal-body')
+                                                form#form_patch_tc_mail(method='post', action='/project/mail?type=patch_tc_mail', class='form-horizontal')
+                                                    input(type='text', name='from', style='opacity:0', value='#{cookie.login_name}@vobile.cn')
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='patch_receiver') Receiver (split with ;):
+                                                        div(class='controls')
+                                                            input#patch_receiver(type='text', class='input-xxlarge', name='receiver', value=const_prj_info.receiver)
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='patch_subject') Subject:
+                                                        div(class='controls')
+                                                            input#patch_subject(type='text', class='input-xlarge', name='subject', value='[TC][#{const_prj_info.name} #{const_prj_info.version}] #{now_date1}')
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='patch_body') Body:
+                                                        div(class='controls')
+                                                            textarea#patch_body(rows='12', class='input-xxlarge',  name='body') .
+                                                                All, #{const_prj_info.name} #{const_prj_info.version} has reached TC today.
+
+                                                                Test Report: N/A
+                                                                Sign-off Ticket: N/A
+
+                                                                Release packages:
+                                                                    Module name: The URL of the package
+
+                                                                ER tags:
+                                                                    Module name: SVN tag
+
+                                                                Thanks!
+                                                    div(class='control-group')
+                                                        div(class='controls')
+                                                            button#patch_tc_mail_submit_btn(style='visibility:hidden', class='btn btn-small btn-primary', type='submit', onclick='xhrSendMail("patch_tc_mail", #{const_prj_info.id});') Update
+                                            div(class='modal-footer')
+                                                a(onclick='$("#close_btn_patch_tc_mail").click();',class="btn") Close
+                                                a(onclick='$("#patch_tc_mail_submit_btn").click();', class="btn btn-primary") Send
+                                    section
+                                        div(class='page-header')
+                                            h1(class='text-success') Feedback
+                                        form(class='form-horizontal')
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    ol#patch_feedback_list
+                                                        - for (var i = 0; i < feedbacks.length; ++i)
+                                                            - var fd = feedbacks[i];
+                                                            li
+                                                                a(target='_blank', href='/feedback/' + fd.id) #{fd.subject}
+                                        form#form_patch_feedback(method='post', action='/project/update?section=feedback', class='form-horizontal')
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_subject') Subject:
+                                                div(class='controls')
+                                                    input#patch_subject(type='text', class='input-xxlarge', name='subject')
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_desc') 顶 / 拍:
+                                                div(class='controls')
+                                                    textarea#patch_desc(rows='6', class='input-xxlarge',  name='desc') .
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_category') Category:
+                                                div(class='controls')
+                                                    select#patch_category(class='span9', name='category')
+                                                        - for (var i = 0; i < categories.length; ++i)
+                                                            - var r = categories[i];
+                                                            option(value='#{r.id}') #{r.description}
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("patch_feedback", #{const_prj_info.id});') 吐槽
+                                                    span#res_patch_feedback(class='label label-success', style='margin-left:10px; opacity:0') success
+                                    section
+                                        div(class='page-header')
+                                            h1(class='text-success') Confirm
+                                        form#form_patch_confirm(method='post', action='/project/update?section=confirm', class='form-horizontal')
+                                            input(type='text', style='opacity:0; display:none', name='tc_date', value=const_prj_info.tc_date)
+                                            - if (const_prj_info.version.indexOf('a') != -1 || const_prj_info.version.indexOf('b') != -1)
+                                                input(type='text', style='opacity:0; display:none', name='test_case', value=const_prj_info.test_case)
+                                            input(type='text', style='opacity:0; display:none', name='version_type', value='4')
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_remark') Remark:
+                                                div#patch_remark(class='controls')
+                                                    textarea(rows='6', class='input-xxlarge',  name='remark') .
+                                                        #{const_prj_info.remark}
+                                            div(class='control-group')
+                                                label(class='control-label', for='patch_pass') Pass:
+                                                div(class='controls')
+                                                    - if (const_prj_info.review_pass)
+                                                        input#patch_pass(type='checkbox', name='pass', checked='')
+                                                    - else
+                                                        input#patch_pass(type='checkbox', name='pass')
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    - if (const_prj_info.reviewer_id == cookie.id || 'admin' == cookie.role || 'tl' == cookie.role)
+                                                        button#btn_patch_confirm(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("patch_confirm", #{const_prj_info.id});') Confirm
+                                                        span#res_patch_confirm(class='label label-success', style='margin-left:10px; opacity:0') success
+                - else
+                    div(class='span10')
+                        div(class='container')
+                            div(class='row')
+                                div(class='span2 bs-docs-sidebar')
+                                    ul(class='nav nav-list bs-docs-sidenav affix-top')
+                                        li
+                                            a(href='#kickoff') Kickoff
+                                                i(class='icon-chevron-right')
+                                        li
+                                            a(href='#pc') PC
+                                                i(class='icon-chevron-right')
+                                        li
+                                            a(href='#dc') DC
+                                                i(class='icon-chevron-right')
+                                        li
+                                            a(href='#cc') CC
+                                                i(class='icon-chevron-right')
+                                        li
+                                            a(href='#tc') TC
+                                                i(class='icon-chevron-right')
+                                        li
+                                            a(href='#feedback') Feedback
+                                                i(class='icon-chevron-right')
+                                        li
+                                            a(href='#review') Review
+                                                i(class='icon-chevron-right')
+                                        li
+                                            a(href='#confirm') Confirm
+                                                i(class='icon-chevron-right')
+                                div(class='span10')
+                                    section#kickoff
+                                        div(class='page-header')
+                                            h1(class='text-success') Kickoff
+                                        form#form_kickoff(method='post', action='/project/update?section=kickoff', class='form-horizontal')
+                                            div(class='control-group')
+                                                label(class='control-label', for='pm') PM:
+                                                div(class='controls')
+                                                    select#pm(class='span3', name='pm')
+                                                        option(value=0)
+                                                        - for (var i = 0; i < members.length; ++i)
+                                                            - var m = members[i];
+                                                            - if (m.role == 'pm')
+                                                                - if (m.id == const_prj_info.member_pm_id)
+                                                                    option(value=m.id, selected='') #{m.name}
+                                                                - else
+                                                                    option(value=m.id) #{m.name}
+                                            div(class='control-group')
+                                                label(class='control-label', for='arch') Architect:
+                                                div(class='controls')
+                                                    select#arch(class='span3', name='arch')
+                                                        option(value=0)
+                                                        - for (var i = 0; i < members.length; ++i)
+                                                            - var m = members[i];
+                                                            - if (m.role == 'arch')
+                                                                - if (m.id == const_prj_info.member_arch_id)
+                                                                    option(value=m.id, selected='') #{m.name}
+                                                                - else
+                                                                    option(value=m.id) #{m.name}
+                                            div(class='control-group')
+                                                label(class='control-label', for='dl') DL:
+                                                div(class='controls')
+                                                    select#dl(class='span3', name='dl')
+                                                        option(value=0)
+                                                        - for (var i = 0; i < members.length; ++i)
+                                                            - var m = members[i];
+                                                            - if (m.role == 'dl')
+                                                                - if (m.id == const_prj_info.member_dl_id)
+                                                                    option(value=m.id, selected='') #{m.name}
+                                                                - else
+                                                                    option(value=m.id) #{m.name}
+                                            div(class='control-group')
+                                                label(class='control-label', for='plan_cc_date') Expect CC date:
+                                                div(class='controls')
+                                                    - var dt = const_prj_info.plan_cc_date;
+                                                    - var tmp_date = '';
+                                                    - if (dt != null && !isNaN(dt.getFullYear()))
+                                                        - tmp_date = '' + dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
+                                                    input#plan_cc_date(type='text', class='input-large', name='plan_cc_date', value=tmp_date)
+                                            div(class='control-group')
+                                                label(class='control-label', for='plan_tc_date') Expect TC date:
+                                                div(class='controls')
+                                                    - var dt = const_prj_info.plan_tc_date;
+                                                    - var tmp_date = '';
+                                                    - if (dt != null && !isNaN(dt.getFullYear()))
+                                                        - tmp_date = '' + dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
+                                                    input#plan_tc_date(type='text', class='input-large', name='plan_tc_date', value=tmp_date)
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("kickoff", #{const_prj_info.id});') Update
+                                                    span#res_kickoff(class='label label-success', style='margin-left:10px; opacity:0') success
+                                    section#pc
+                                        div(class='page-header')
+                                            h1(class='text-success') PC
+                                        form#form_pc(method='post', action='/project/update?section=pc', class='form-horizontal')
+                                            div(class='control-group')
+                                                label(class='control-label', for='prd') PRD:
+                                                div(class='controls')
+                                                    input#prd(type='text', class='input-xxlarge', name='prd', value=const_prj_info.prd_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='prd_signoff') Sign off ticket:
+                                                div(class='controls')
+                                                    input#prd_signoff(type='text', class='input-xxlarge', name='signoff', value=const_prj_info.prd_signoff_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='prd_review') Review outcome:
+                                                div(class='controls')
+                                                    textarea#prd_review(rows='6', class='input-xxlarge',  name='review') .
+                                                        #{const_prj_info.prd_review}
+                                                    div(class='bs-docs-example')
+                                                        ul
+                                                            li 需求清晰明确，描述无歧义和冲突
+                                                            li 需求可测试，可度量
+                                                            li 需求合理性和必要性 
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("pc", #{const_prj_info.id});') Update
+                                                    span#res_pc(class='label label-success', style='margin-left:10px; opacity:0') success
+                                    section#dc
+                                        div(class='page-header')
+                                            h1(class='text-success') DC
+                                        form#form_dc(method='post', action='/project/update?section=dc', class='form-horizontal')
+                                            div(class='control-group')
+                                                label(class='control-label', for='ui_design') UI design:
+                                                div(class='controls')
+                                                    input#ui_design(type='text', class='input-xxlarge', name='ui_design', value=const_prj_info.ui_design_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='ui_design_signoff') UI sign off ticket:
+                                                div(class='controls')
+                                                    input#ui_design_signoff(type='text', class='input-xxlarge', name='ui_signoff', value=const_prj_info.ui_design_signoff_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='arch_design') Arch design:
+                                                div(class='controls')
+                                                    input#arch_design(type='text', class='input-xxlarge', name='arch_design', value=const_prj_info.arch_design_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='arch_design_signoff') Arch sign off ticket:
+                                                div(class='controls')
+                                                    input#arch_design_signoff(type='text', class='input-xxlarge', name='arch_signoff', value=const_prj_info.arch_design_signoff_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='detail_design') Detail design:
+                                                div(class='controls')
+                                                    textarea#detail_design(rows='5', class='input-xxlarge', name='detail_design') .
+                                                        #{const_prj_info.detail_design_url}
+                                            div(class='control-group')
+                                                label(class='control-label', for='design_signoff') Detail sign off ticket:
+                                                div(class='controls')
+                                                    input#design_signoff(type='text', class='input-xxlarge', name='signoff', value=const_prj_info.design_signoff_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='db_design') DB design:
+                                                div(class='controls')
+                                                    input#db_design(type='text', class='input-xxlarge', name='db_design', value=const_prj_info.db_design_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='db_design_signoff') DB sign off ticket:
+                                                div(class='controls')
+                                                    input#db_design_signoff(type='text', class='input-xxlarge', name='db_signoff', value=const_prj_info.db_design_signoff_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='design_review') Review outcome:
+                                                div(class='controls')
+                                                    textarea#prd_review(rows='6', class='input-xxlarge',  name='review') .
+                                                        #{const_prj_info.design_review}
+                                                    div(class='bs-docs-example')
+                                                        ul
+                                                            li 描述清晰
+                                                            li 设计能够覆盖需求
+                                                            li 设计合理性 
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("dc", #{const_prj_info.id});') Update
+                                                    span#res_dc(class='label label-success', style='margin-left:10px; opacity:0') success
+                                    section#cc
+                                        div(class='page-header')
+                                            h1(class='text-success') CC
+                                        form#form_cc(method='post', action='/project/update?section=cc', class='form-horizontal')
+                                            div(class='control-group')
+                                                label(class='control-label', for='test_plan') Test plan:
+                                                div(class='controls')
+                                                    input#test_plan(type='text', class='input-xxlarge', name='test_plan', value=const_prj_info.test_plan_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='case_cross_review') Case cross review:
+                                                div(class='controls')
+                                                    input#case_cross_review(type='text', class='input-xxlarge', name='case_cross_review', value=const_prj_info.case_cross_review_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='case_review') Case formal review:
+                                                div(class='controls')
+                                                    input#case_review(type='text', class='input-xxlarge', name='case_review', value=const_prj_info.case_review_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='case_signoff') Sign off ticket:
+                                                div(class='controls')
+                                                    input#case_signoff(type='text', class='input-xxlarge', name='signoff', value=const_prj_info.case_signoff_url)
+
+                                            - if ('admin' == cookie.role)
+                                                div(class='control-group')
+                                                    label(class='control-label', for='modify_cc_date') CC date:
+                                                    div(class='controls')
+                                                        - var dt = const_prj_info.cc_date;
+                                                        - var tmp_date = '';
+                                                        - if (dt != null && !isNaN(dt.getFullYear()))
+                                                            - tmp_date = '' + dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
+                                                        input#modify_cc_date(type='text', class='input-small', name='cc_date', value=tmp_date)
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("cc", #{const_prj_info.id});') Update
+                                                    span#res_cc(class='label label-success', style='margin-left:10px; opacity:0') success
+                                        form(class='form-horizontal')
+                                            div(class='control-group')
+                                                label(class='control-label') CC pass mail sent:
+                                                div(class='controls')
+                                                    - var v = 'no';
+                                                    - if (const_prj_info.cc_pass_mail && const_prj_info.cc_pass_mail.length)
+                                                        - v = 'yes';
+                                                    input(type='text', class='input-mini', value=v, readonly='true')
+                                            div(class='control-group')
+                                                label(class='control-label') CC back mail sent:
+                                                div(class='controls')
+                                                    - var v = 'no';
+                                                    - if (const_prj_info.cc_back_mail && const_prj_info.cc_back_mail.length)
+                                                        - v = 'yes';
+                                                    input(type='text', class='input-mini', value=v, readonly='true')
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    div(class='btn-group')
+                                                        button(class='btn btn-small btn-primary', type='button', onclick='$("#modal_cc_pass").modal("show");') Send CC pass
+
+                                                        button(class='btn btn-small btn-primary', type='button', onclick='$("#modal_cc_back").modal("show");') Send CC back
+                                        div#modal_cc_pass(class='modal hide fade', style='width:800px;')
+                                            div(class='modal-header')
+                                                button#close_btn_cc_pass(type='button', class='close', data-dismiss='modal', aria-hidden='true') &times;
+                                                h3 CC Pass
+                                            div(class='modal-body')
+                                                form#form_cc_pass(method='post', action='/project/mail?type=cc_pass', class='form-horizontal')
+                                                    input(type='text', name='from', style='opacity:0', value='#{cookie.login_name}@vobile.cn')
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='receiver') Receiver (split with ;):
+                                                        div(class='controls')
+                                                            input#receiver(type='text', class='input-xxlarge', name='receiver', value=const_prj_info.receiver)
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='subject') Subject:
+                                                        div(class='controls')
+                                                            input#subject(type='text', class='input-xlarge', name='subject', value='[cc][#{const_prj_info.name} #{const_prj_info.version}] #{now_date1}')
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='body') Body:
+                                                        div(class='controls')
+                                                            textarea#body(rows='12', class='input-xxlarge',  name='body') .
+                                                                All, #{const_prj_info.name} #{const_prj_info.version} has reached CC today.
+
+                                                                Test Plan: #{const_prj_info.test_plan_url}
+                                                                Test Case: http://192.168.1.24/testlink
+                                                                Sign-off Ticket: #{const_prj_info.case_signoff_url}
+
+                                                                CC tags:
+
+                                                                Thanks!
+                                                    div(class='control-group')
+                                                        div(class='controls')
+                                                            button#cc_pass_submit_btn(style='visibility:hidden', class='btn btn-small btn-primary', type='submit', onclick='xhrSendMail("cc_pass", #{const_prj_info.id});') Update
+                                            div(class='modal-footer')
+                                                a(onclick='$("#close_btn_cc_pass").click();',class="btn") Close
+                                                a(onclick='$("#cc_pass_submit_btn").click();', class="btn btn-primary") Send
+                                        div#modal_cc_back(class='modal hide fade', style='width:800px;')
+                                            div(class='modal-header')
+                                                button#close_btn_cc_back(type='button', class='close', data-dismiss='modal', aria-hidden='true') &times;
+                                                h3 CC Back
+                                            div(class='modal-body')
+                                                form#form_cc_back(method='post', action='/project/mail?type=cc_back', class='form-horizontal')
+                                                    input(type='text', name='from', style='opacity:0', value='#{cookie.login_name}@vobile.cn')
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='receiver') Receiver (split with ;):
+                                                        div(class='controls')
+                                                            input#receiver(type='text', class='input-xxlarge', name='receiver', value=const_prj_info.receiver)
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='subject') Subject:
+                                                        div(class='controls')
+                                                            input#subject(type='text', class='input-xlarge', name='subject', value='[#{const_prj_info.name} #{const_prj_info.version}] 测试打回')
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='body') Body:
+                                                        div(class='controls')
+                                                            textarea#body(rows='12', class='input-xxlarge',  name='body') .
+
+                                                                因违背下面标准，测试未能继续进行，请修复后重新提交测试，谢谢。
+                                                                    不符合测试提交标准
+                                                                        不符合情况一
+                                                                        不符合情况二 
+                                                                    CC测试用例不通过
+                                                                        不通过理由一
+                                                                        不通过理由二 
+                                                                    发包邮件格式和内容不符合规范
+                                                                        不符合情况一
+                                                                        不符合情况二 
+                                                                    未按照规范进行code review
+                                                                        不符合情况一
+                                                                        不符合情况二 
+                                                    div(class='control-group')
+                                                        div(class='controls')
+                                                            button#cc_back_submit_btn(style='visibility:hidden', class='btn btn-small btn-primary', type='submit', onclick='xhrSendMail("cc_back", #{const_prj_info.id});') Update
+                                            div(class='modal-footer')
+                                                a(onclick='$("#close_btn_cc_back").click();',class="btn") Close
+                                                a(onclick='$("#cc_back_submit_btn").click();', class="btn btn-primary") Send
+                                    section#tc
+                                        div(class='page-header')
+                                            h1(class='text-success') TC
+                                        form(class='form-horizontal')
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    div(class='btn-group')
+                                                        button(class='btn btn-small btn-primary', type='button', onclick='$("#modal_tdr").modal("show");') Send TDR
+                                                        button(class='btn btn-small btn-primary', type='button', onclick='$("#modal_tc").modal("show");') Send TC
+                                        div#modal_tdr(class='modal hide fade', style='width:800px;')
+                                            div(class='modal-header')
+                                                button#close_btn_tdr(type='button', class='close', data-dismiss='modal', aria-hidden='true') &times;
+                                                h3 TDR
+                                            div(class='modal-body')
+                                                form#form_tdr(method='post', action='/project/mail?type=tdr', class='form-horizontal')
+                                                    input(type='text', name='from', style='opacity:0', value='#{cookie.login_name}@vobile.cn')
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='receiver') Receiver (split with ;):
+                                                        div(class='controls')
+                                                            input#receiver(type='text', class='input-xxlarge', name='receiver', value=const_prj_info.receiver)
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='subject') Subject:
+                                                        div(class='controls')
+                                                            input#subject(type='text', class='input-xlarge', name='subject', value='[TDR][#{const_prj_info.name} #{const_prj_info.version}] #{now_date1}')
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='body') Body:
+                                                        div(class='controls')
+                                                            textarea#body(rows='12', class='input-xxlarge',  name='body') .
+                                                                一，测试阶段：第N轮
+                                                                二，用例进度：0/0
+                                                                三，问题和风险：
+                                                                四，明日计划：
+                                                                五，Bug统计：
+
+                                                    div(class='control-group')
+                                                        div(class='controls')
+                                                            button#tdr_submit_btn(style='visibility:hidden', class='btn btn-small btn-primary', type='submit', onclick='xhrSendMail("tdr", #{const_prj_info.id});') Update
+                                            div(class='modal-footer')
+                                                a(onclick='$("#close_btn_tdr").click();',class="btn") Close
+                                                a(onclick='$("#tdr_submit_btn").click();', class="btn btn-primary") Send
+                                        div#modal_tc(class='modal hide fade', style='width:800px;')
+                                            div(class='modal-header')
+                                                button#close_btn_tc_mail(type='button', class='close', data-dismiss='modal', aria-hidden='true') &times;
+                                                h3 TC
+                                            div(class='modal-body')
+                                                form#form_tc_mail(method='post', action='/project/mail?type=tc_mail', class='form-horizontal')
+                                                    input(type='text', name='from', style='opacity:0', value='#{cookie.login_name}@vobile.cn')
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='receiver') Receiver (split with ;):
+                                                        div(class='controls')
+                                                            input#receiver(type='text', class='input-xxlarge', name='receiver', value=const_prj_info.receiver)
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='subject') Subject:
+                                                        div(class='controls')
+                                                            input#subject(type='text', class='input-xlarge', name='subject', value='[TC][#{const_prj_info.name} #{const_prj_info.version}] #{now_date1}')
+                                                    div(class='control-group')
+                                                        label(class='control-label', for='body') Body:
+                                                        div(class='controls')
+                                                            textarea#body(rows='12', class='input-xxlarge',  name='body') .
+                                                                All, #{const_prj_info.name} #{const_prj_info.version} has reached TC today.
+
+                                                                Test Report: #{const_prj_info.test_report_url}
+                                                                Sign-off Ticket: #{const_prj_info.report_signoff_url}
+
+                                                                Release packages:
+                                                                    Module name: The URL of the package
+
+                                                                ER tags:
+                                                                    Module name: SVN tag
+
+                                                                Thanks!
+                                                    div(class='control-group')
+                                                        div(class='controls')
+                                                            button#tc_mail_submit_btn(style='visibility:hidden', class='btn btn-small btn-primary', type='submit', onclick='xhrSendMail("tc_mail", #{const_prj_info.id});') Update
+                                            div(class='modal-footer')
+                                                a(onclick='$("#close_btn_tc_mail").click();',class="btn") Close
+                                                a(onclick='$("#tc_mail_submit_btn").click();', class="btn btn-primary") Send
+                                        form#form_tc(method='post', action='/project/update?section=tc', class='form-horizontal')
+                                            div(class='control-group')
+                                                label(class='control-label', for='bugs') Valid bug #:
+                                                div(class='controls')
+                                                    input#bugs(type='number', class='input-mini', name='bugs', value=const_prj_info.bugs)
+                                            div(class='control-group')
+                                                label(class='control-label', for='blocker_bugs') Blocker bug #:
+                                                div(class='controls')
+                                                    input#blocker_bugs(type='number', class='input-mini', name='blocker_bugs', value=const_prj_info.blocker_bugs)
+                                            div(class='control-group')
+                                                label(class='control-label', for='critical_bugs') Critical bug #:
+                                                div(class='controls')
+                                                    input#critical_bugs(type='number', class='input-mini', name='critical_bugs', value=const_prj_info.critical_bugs)
+                                            div(class='control-group')
+                                                label(class='control-label', for='low_value_bugs') Low value bug #:
+                                                div(class='controls')
+                                                    textarea#low_value_bugs(rows='6', class='input-xxlarge',  name='low_value_bugs') .
+                                                        #{const_prj_info.low_value_bugs}
+                                            div(class='control-group')
+                                                label(class='control-label', for='pkg_times') Package times:
+                                                div(class='controls')
+                                                    input#pkg_times(type='number', class='input-mini', name='pkg_times', value=const_prj_info.pkg_times)
+                                            div(class='control-group')
+                                                label(class='control-label', for='pkg_reason') Package reason:
+                                                div(class='controls')
+                                                    textarea#pkg_reason(rows='6', class='input-xxlarge',  name='pkg_reason') .
+                                                        #{const_prj_info.pkg_reason}
+                                            div(class='control-group')
+                                                label(class='control-label', for='1st_round_end') First round test finsh:
+                                                div(class='controls')
+                                                    div#1st_round_end(class='input-append date', data-date='', data-date-format='yyyy-mm-dd')
+                                                        - var dt = const_prj_info.rnd_1st_end_date;
+                                                        - var tmp_date = '';
+                                                        - if (dt != null && !isNaN(dt.getFullYear()))
+                                                            - tmp_date = '' + dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
+                                                        input(type='text', class='span6', readonly='', name='rnd_1st_end', value=tmp_date)
+                                                        span(class='add-on')
+                                                            i(class='icon-calendar')
+                                                        script
+                                                            $('#1st_round_end').datepicker({
+                                                                 onRender: function(date) {
+                                                                               return date.valueOf() > now.valueOf() ? 'disabled' : '';
+                                                                           }
+                                                            });
+                                            div(class='control-group')
+                                                label(class='control-label', for='2nd_round_end') Second round test finsh:
+                                                div(class='controls')
+                                                    div#2nd_round_end(class='input-append date', data-date='', data-date-format='yyyy-mm-dd')
+                                                        - var dt = const_prj_info.rnd_2nd_end_date;
+                                                        - var tmp_date = '';
+                                                        - if (dt != null && !isNaN(dt.getFullYear()))
+                                                            - tmp_date = '' + dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
+                                                        input(type='text', class='span6', readonly='', name='rnd_2nd_end', value=tmp_date)
+                                                        span(class='add-on')
+                                                            i(class='icon-calendar')
+                                                        script
+                                                            $('#2nd_round_end').datepicker({
+                                                                 onRender: function(date) {
+                                                                               return date.valueOf() > now.valueOf() ? 'disabled' : '';
+                                                                           }
+                                                            });
+                                            div(class='control-group')
+                                                label(class='control-label', for='3rd_round_end') Third round test finsh:
+                                                div(class='controls')
+                                                    div#3rd_round_end(class='input-append date', data-date='', data-date-format='yyyy-mm-dd')
+                                                        - var dt = const_prj_info.rnd_3rd_end_date;
+                                                        - var tmp_date = '';
+                                                        - if (dt != null && !isNaN(dt.getFullYear()))
+                                                            - tmp_date = '' + dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
+                                                        input(type='text', class='span6', readonly='', name='rnd_3rd_end', value=tmp_date)
+                                                        span(class='add-on')
+                                                            i(class='icon-calendar')
+                                                        script
+                                                            $('#3rd_round_end').datepicker({
+                                                                 onRender: function(date) {
+                                                                               return date.valueOf() > now.valueOf() ? 'disabled' : '';
+                                                                           }
+                                                            });
+                                            div(class='control-group')
+                                                label(class='control-label', for='bug_review') Bug review:
+                                                div(class='controls')
+                                                    input#bug_review(type='text', class='input-xxlarge', name='bug_review', value=const_prj_info.bug_review_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='test_report') Test report:
+                                                div(class='controls')
+                                                    input#test_report(type='text', class='input-xxlarge', name='test_report', value=const_prj_info.test_report_url)
+                                            div(class='control-group')
+                                                label(class='control-label', for='report_signoff') Sign off ticket:
+                                                div(class='controls')
+                                                    input#report_signoff(type='text', class='input-xxlarge', name='signoff', value=const_prj_info.report_signoff_url)
+                                            - if ('admin' == cookie.role)
+                                                div(class='control-group')
+                                                    label(class='control-label', for='modify_tc_date') TC date:
+                                                    div(class='controls')
+                                                        - var dt = const_prj_info.tc_date;
+                                                        - var tmp_date = '';
+                                                        - if (dt != null && !isNaN(dt.getFullYear()))
+                                                            - tmp_date = '' + dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
+                                                        input#modify_tc_date(type='text', class='input-small', name='tc_date', value=tmp_date)
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("tc", #{const_prj_info.id});') Update
+                                                    span#res_tc(class='label label-success', style='margin-left:10px; opacity:0') success
+
+                                    section#feedback
+                                        div(class='page-header')
+                                            h1(class='text-success') Feedback
+                                        form(class='form-horizontal')
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    ol#feedback_list
+                                                        - for (var i = 0; i < feedbacks.length; ++i)
+                                                            - var fd = feedbacks[i];
+                                                            li
+                                                                a(target='_blank', href='/feedback/' + fd.id) #{fd.subject}
+                                        form#form_feedback(method='post', action='/project/update?section=feedback', class='form-horizontal')
+                                            div(class='control-group')
+                                                label(class='control-label', for='subject') Subject:
+                                                div(class='controls')
+                                                    input#subject(type='text', class='input-xxlarge', name='subject')
+                                            div(class='control-group')
+                                                label(class='control-label', for='desc') 顶 / 拍:
+                                                div(class='controls')
+                                                    textarea#desc(rows='6', class='input-xxlarge',  name='desc') .
+                                            div(class='control-group')
+                                                label(class='control-label', for='category') Category:
+                                                div(class='controls')
+                                                    select#category(class='span9', name='category')
+                                                        - for (var i = 0; i < categories.length; ++i)
+                                                            - var r = categories[i];
+                                                            option(value='#{r.id}') #{r.description}
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("feedback", #{const_prj_info.id});') 吐槽
+                                                    span#res_feedback(class='label label-success', style='margin-left:10px; opacity:0') success
+                                    section#review
+                                        div(class='page-header')
+                                            h1(class='text-success') Review
+                                        form#form_review(method='post', action='/project/update?section=review', class='form-horizontal')
+                                            div(class='control-group')
+                                                label(class='control-label', for='reviewer') Reviewer:
+                                                div(class='controls')
+                                                    select#reviewer(class='span3', name='reviewer')
+                                                        option(value=0)
+                                                        - for (var i = 0; i < reviewers.length; ++i)
+                                                            - var r = reviewers[i];
+                                                            - if (const_prj_info.requester_id == r.id)
+                                                                - continue
+                                                            - if (r.id == const_prj_info.reviewer_id)
+                                                                option(value='#{r.id}', selected='') #{r.display_name}
+                                                            - else
+                                                                option(value='#{r.id}') #{r.display_name}
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("review", #{const_prj_info.id});') Request
+                                                    span#res_review(class='label label-success', style='margin-left:10px; opacity:0') success
+                                    section#confirm
+                                        div(class='page-header')
+                                            h1(class='text-success') Confirm
+                                        form#form_confirm(method='post', action='/project/update?section=confirm', class='form-horizontal')
+                                            input(type='text', style='opacity:0; display:none', name='cc_date', value=const_prj_info.cc_date)
+                                            input(type='text', style='opacity:0; display:none', name='tc_date', value=const_prj_info.tc_date)
+                                            input(type='text', style='opacity:0; display:none', name='version_type', value=const_prj_info.version_type)
+                                            div(class='control-group')
+                                                label(class='control-label', for='remark') Remark:
+                                                div#remark(class='controls')
+                                                    textarea(rows='6', class='input-xxlarge',  name='remark') .
+                                                        #{const_prj_info.remark}
+                                            div(class='control-group')
+                                                label(class='control-label', for='pass') Pass:
+                                                div(class='controls')
+                                                    - if (const_prj_info.review_pass)
+                                                        input#pass(type='checkbox', name='pass', checked='')
+                                                    - else
+                                                        input#pass(type='checkbox', name='pass')
+                                            div(class='control-group')
+                                                div(class='controls')
+                                                    - if (const_prj_info.reviewer_id == cookie.id || 'admin' == cookie.role || 'tl' == cookie.role)
+                                                        button#btn_confirm(class='btn btn-small btn-primary', type='submit', onclick='xhrPrjUpdate("confirm", #{const_prj_info.id});') Confirm
+                                                        span#res_confirm(class='label label-success', style='margin-left:10px; opacity:0') success
+        script
+            var type = "#{const_type}";
+            var prj_role = "#{prj_role}";
+            var user_role = "#{cookie.role}";
+            /*if (type == 'finish') {
+                $('input').attr('disabled', 'disabled');
+                $('select').attr('disabled', 'disabled');
+                $('button').attr('disabled', 'disabled');
+                $('textarea').attr('disabled', 'disabled');
+            } else if (prj_role != 'admin' && user_role != 'admin') {
+                $('button').attr('disabled', 'disabled');
+            }*/
+            if (prj_role != 'admin' && user_role != 'admin') {
+                $('button').attr('disabled', 'disabled');
+            }
+            $('#btn_confirm').removeAttr('disabled');
+            $('#btn_patch_confirm').removeAttr('disabled');
+        script(src="/javascripts/bootstrap-transition.js")
+        script(src="/javascripts/bootstrap-alert.js")
+        script(src="/javascripts/bootstrap-modal.js")
+        script(src="/javascripts/bootstrap-dropdown.js")
+        script(src="/javascripts/bootstrap-scrollspy.js")
+        script(src="/javascripts/bootstrap-tab.js")
+        script(src="/javascripts/bootstrap-tooltip.js")
+        script(src="/javascripts/bootstrap-popover.js")
+        script(src="/javascripts/bootstrap-button.js")
+        script(src="/javascripts/bootstrap-collapse.js")
+        script(src="/javascripts/bootstrap-carousel.js")
+        script(src="/javascripts/bootstrap-typeahead.js")
+        script(src="/javascripts/bootstrap-affix.js")
+        script(src="/javascripts/holder.js")
+        script(src="/javascripts/prettify.js")
+        script(src="/javascripts/application.js")

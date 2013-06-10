@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    script(type='text/javascript')
+        setActive('#tab_goods_create');
+    div(class='container-fluid')
+        div(class='row-fluid')
+            div(class='span9')
+                div(class='hero-unit', style='padding:0;')
+                    form#form_goods_create(method='post', action='/goods/create', class='form-horizontal')
+                        div(class='control-group')
+                            label(class='control-label', for='name') 商品名称:
+                            div(class='controls')
+                                input(type='text', class='input-xxlarge', name='name')
+                        div(class='control-group')
+                            div(class='controls')
+                                button(class='btn btn-small btn-primary', type='submit', onclick='xhrGoodsCreate()') 添加
+                                span#res_goods_create(class='label label-success', style='margin-left:10px; opacity:0') success

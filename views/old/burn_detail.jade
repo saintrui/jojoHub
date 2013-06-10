@@ -1,0 +1,32 @@
+extends layout
+
+block content
+    script(type='text/javascript')
+        setActive('#tab_burn');
+    div(class='container-fluid')
+        div(class='row-fluid')
+            div(class='span9')
+                div(class='hero-unit', style='padding:0;')
+                    form#form_burn_detail(method='post', action='/project/burn', class='form-horizontal')
+                        input(type='text', style='opacity:0; display:none', name='prj_id', value=prj_id)
+                        input(type='text', style='opacity:0; display:none', name='type', value=type)
+                        div(class='control-group')
+                            label(class='control-label', for='docs') Docs
+                            div(class='controls')
+                                textarea#docs(rows='10', class='input-xxlarge',  name='docs') .
+                                    #{detail['docs']}
+                        div(class='control-group')
+                            label(class='control-label', for='er_tags') ER tags
+                            div(class='controls')
+                                textarea#er_tags(rows='4', class='input-xxlarge',  name='er_tags') .
+                                    #{detail['er_tags']}
+                        div(class='control-group')
+                            div(class='controls')
+                                - if (type == 0)
+                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrBurn("burn_detail")') Submit
+                                - if (type == 2)
+                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrBurn("burn_detail")') Confirm
+                                - if (type == 3)
+                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrBurn("burn_detail")') Done
+
+                                span#res_burn_detail(class='label label-success', style='margin-left:10px; opacity:0') success

@@ -1,0 +1,45 @@
+doctype 5
+html
+  head
+    title Wave System
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap.css')
+    script(type="text/javascript",src='/bootstrap/js/bootstrap.js')
+    script(type="text/javascript",src='/javascripts/jquery-1.8.0.min.js')
+    script(type="text/javascript",src='/javascripts/wave.js')
+    style(type='text/css')
+        body {
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+    block header
+  body(data-target='.bs-docs-sidebar', data-spy='scroll')
+    script(type='text/javascript')
+        function setActive(tab_id) {
+            $(tab_id).attr('class', 'active');
+        }
+        function showUserName() {
+            var cookies = {};
+            document.cookie.split(';').forEach(function(cookie) {
+                    var parts = cookie.split('=');
+                    cookies[parts[0].trim()] = (parts[1] || '').trim();
+            });
+            var name = cookies['display_name'];
+            $('#username').html(name != undefined ? decodeURI(name):'');
+        }
+    div(class='navbar navbar-inverse navbar-fixed-top')
+        div(class='navbar-inner')
+            div(class='container-fluid')
+                a(class='btn btn-navbar', data-toggle='collapse', data-target='.nav-collapse')
+                a(class='brand', href='/') JoJo 库存管理系统
+                div(class='nav-collapse collapse')
+                    p(class='navbar-text pull-right') Signed in as 
+                        a#username(href='#', class='navbar-link')
+                        script(type='text/javascript')
+                            showUserName();
+                        a(href='/logout', class='navbar-link', style='margin-left:10px') Sign out
+                    ul(class='nav')
+                        li#tab_goods_create
+                            a(href='/goods/create') 添加商品
+                        li#tab_goods_manage
+                            a(href='/goods/manage') 管理商品
+    block content

@@ -1,0 +1,81 @@
+extends report_graph_layout
+
+block content
+    p(class='text-success') Table 1. Release of each Month:
+    table(class='table table-bordered table-hover')
+        thead
+            tr
+                td Month
+                td Total
+                td V1
+                td V2
+                td V3
+                td V4
+                td V4a
+                td V4b
+                td V4c
+        tbody
+            - for (var i = 0; i < tbl_month_version.length; ++i)
+                - var s = tbl_month_version[i];
+                    tr
+                        td #{s[0]}
+                        td #{s[1]}
+                        td #{s[2]}
+                        td #{s[3]}
+                        td #{s[4]}
+                        td #{s[5]}
+                        td #{s[6]}
+                        td #{s[7]}
+                        td #{s[8]}
+
+    p(class='text-success') Table 2. Release of each Project:
+    table(class='table table-bordered table-hover')
+        thead
+            tr
+                td Project
+                td Total
+                td V1
+                td V2
+                td V3
+                td V4
+                td V4a
+                td V4b
+                td V4c
+        tbody
+            - for (var k in tbl_prj_version)
+                - var s = tbl_prj_version[k];
+                    tr
+                        td #{k}
+                        td #{s[0]}
+                        td #{s[1]}
+                        td #{s[2]}
+                        td #{s[3]}
+                        td #{s[4]}
+                        td #{s[5]}
+                        td #{s[6]}
+                        td #{s[7]}
+
+    script(type="text/javascript")
+        google.load("visualization", "1", {packages:["corechart"]});
+        google.setOnLoadCallback(drawChart);
+
+        var str = '#{tbl_month_version}';
+        var arr = str.split(',');
+        var graph_data = [['Month', 'V4a', 'V4b', 'V4c']];
+        for (var i = 0; i < arr.length/9; ++i) {
+            var j = 9 * i;
+            graph_data.push([arr[j], parseInt(arr[j+6]), parseInt(arr[j+7]), parseInt(arr[j+8])]);
+        }
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable(graph_data);
+            var options = {
+                title: 'Release by Version',
+                hAxis: {title: 'Month'}
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+
+    div#chart_div(style="width: 800px; height: 400px;")

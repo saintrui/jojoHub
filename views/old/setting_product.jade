@@ -1,0 +1,85 @@
+extends setting_layout
+
+block content_setting
+    form#form_add_product(method='post', action='/setting?type=product&section=add', class='form-horizontal')
+        div(class='control-group')
+            label(class='control-label', for='product_name') Product name:
+            div(class='controls')
+                input#product_name(type='text', class='input-middle', name='product_name')
+        div(class='control-group')
+            label(class='control-label', for='receiver') Email receiver:
+            div(class='controls')
+                input#receiver(type='text', class='input-xxlarge', name='receiver')
+                span(style='margin-left:10px') (seprate with ;)
+        div(class='control-group')
+            label(class='control-label', for='prefix') Prefix:
+            div(class='controls')
+                input#prefix(type='text', class='input-middle', name='prefix')
+        div(class='control-group')
+            label(class='control-label', for='trac_name') Trac name:
+            div(class='controls')
+                input#trac_name(type='text', class='input-middle', name='trac_name')
+        div(class='control-group')
+            div(class='controls')
+                button(class='btn btn-small btn-primary', type='submit', onclick='xhrSetting("add_product")') Add
+                span#res_add_product(class='label label-success', style='margin-left:10px; opacity:0') success
+
+    - var arr = [];
+    - for (var i = 0; i < products.length; ++i)
+        - var p = products[i];
+        - arr.push(p.id);
+        - arr.push(p.name);
+        - arr.push(p.receiver);
+        - arr.push(p.prefix);
+        - arr.push(p.trac_name);
+    script(type='text/javascript')
+        function showProduct(id) {
+            var p = "#{arr}";
+            var parr = p.split(',');
+            console.log(parr);
+            for (var i = 0; i < parr.length/5; ++i) {
+                var j = 5 * i;
+                if (parseInt(parr[j]) == id) {
+                    $('#update_product_name').attr('value', parr[j+1]);
+                    $('#update_receiver').attr('value', parr[j+2]);
+                    $('#update_prefix').attr('value', parr[j+3]);
+                    $('#update_trac_name').attr('value', parr[j+4]);
+                    break;
+                }
+            }
+        }
+    form#form_update_product(method='post', action='/setting?type=product&section=update', class='form-horizontal')
+        div(class='control-group')
+            label(class='control-label', for='update_product_id') Product name:
+            div(class='controls')
+                select#update_product_id(class='span4', name='product_id', onchange='showProduct(this.options[this.selectedIndex].value)')
+                    option
+                    - for (var i = 0; i < products.length; ++i)
+                        - var p = products[i];
+                        option(value=p.id) #{p.name}
+        div(class='control-group')
+            label(class='control-label', for='update_product_name') New product name:
+            div(class='controls')
+                input#update_product_name(type='text', class='input-middle', name='product_name')
+        div(class='control-group')
+            label(class='control-label', for='update_receiver') New email receiver:
+            div(class='controls')
+                input#update_receiver(type='text', class='input-xxlarge', name='receiver')
+                span(style='margin-left:10px') (seprate with ;)
+        div(class='control-group')
+            label(class='control-label', for='update_prefix') New prefix:
+            div(class='controls')
+                input#update_prefix(type='text', class='input-xxlarge', name='prefix')
+        div(class='control-group')
+            label(class='control-label', for='update_trac_name') New trac name:
+            div(class='controls')
+                input#update_trac_name(type='text', class='input-middle', name='trac_name')
+        div(class='control-group')
+            div(class='controls')
+                button(class='btn btn-small btn-primary', type='submit', onclick='xhrSetting("update_product")') Update
+                span#res_update_product(class='label label-success', style='margin-left:10px; opacity:0') success
+
+    script
+        var role = '#{cookie["role"]}'
+        if ('admin' != role)
+            $('button').attr('disabled', 'disabled');

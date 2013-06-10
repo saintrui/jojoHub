@@ -1,0 +1,48 @@
+extends layout
+
+block content
+    script(type='text/javascript')
+        setActive('#tab_burn');
+    div(class='container-fluid')
+        div(class='row-fluid')
+            div(class='span9')
+                div(class='page-header')
+                    h4(class='text-success') 待提交刻盘内容
+                ol
+                    - for (var i = 0; i < prjs.length; ++i)
+                        - var prj = prjs[i];
+                        li
+                            a(href='/project/burn?type=0&prj=' + prj.id) #{prj.name} #{prj.version} 
+                div(class='page-header')
+                    h4(class='text-success') 待下载刻盘内容
+                ol
+                    - for (var i = 0; i < burn_tasks.length; ++i)
+                        - var t = burn_tasks[i];
+                        - if (t.status == 'new')
+                            li
+                                a(href='/project/burn?type=1&prj=' + t.id) #{t.name} #{t.version} #{t.status} #{t.display_name} #{t.update_time}
+                div(class='page-header')
+                    h4(class='text-success') 待确认下载内容
+                    span mount -t nfs 192.168.20.163:/home/zj/burn /mnt/
+                ol
+                    - for (var i = 0; i < burn_tasks.length; ++i)
+                        - var t = burn_tasks[i];
+                        - if (t.status == 'download')
+                            li
+                                a(href='/project/burn?type=2&prj=' + t.id) #{t.name} #{t.version} #{t.status} #{t.display_name} #{t.update_time}
+                div(class='page-header')
+                    h4(class='text-success') 可以刻盘
+                ol
+                    - for (var i = 0; i < burn_tasks.length; ++i)
+                        - var t = burn_tasks[i];
+                        - if (t.status == 'confirm')
+                            li
+                                a(href='/project/burn?type=3&prj=' + t.id) #{t.name} #{t.version} #{t.status} #{t.display_name} #{t.update_time}
+                div(class='page-header')
+                    h4(class='text-success') 已刻盘
+                ol
+                    - for (var i = 0; i < burn_tasks.length; ++i)
+                        - var t = burn_tasks[i];
+                        - if (t.status == 'done')
+                            li
+                                a(href='/project/burn?type=4&prj=' + t.id) #{t.name} #{t.version} #{t.display_name} #{t.update_time}
