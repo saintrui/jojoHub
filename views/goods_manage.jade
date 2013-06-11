@@ -2,8 +2,6 @@ extends layout
 
 block header
     link(rel='stylesheet', href='/stylesheets/prj.css')
-    link(rel='stylesheet', href='/stylesheets/datepicker.css')
-    script(type='text/javascript', src='/javascripts/bootstrap-datepicker.js')
 
 block content
     script(const_type='text/javascript')
@@ -24,46 +22,80 @@ block content
                             $('#li_'+gid).attr('class', 'active');
             div(class='span10')
                 div(class='container')
-                    div(class='page-header')
-                        h1(class='text-success') 新建款式
-                    form(id='form_model_create', method='post', action='/goods/model_create', class='form-horizontal')
-                        div(class='control-group')
-                            label(class='control-label') 款式名称
-                            div(class='controls')
-                                input(type='text', style='display:none;opacity:0', name='gid', value='#{gid}')
-                                input(type='text', class='input-xlarge', name='model_name')
-                                button(class='btn btn-small btn-primary', type='submit', onclick='xhrModelCreate()', style='margin-left:#{margin_left};') 创建
-                                span(id='res_model_create', style='margin-left:10px;')
-                    - var counter = 0;
-                    - for (var i = 0; i < models.length; ++i)
-                        - var mdl = models[i];
-                        div(class='page-header')
-                            h1(class='text-success') #{mdl.model_name}
-                        form(class='form-horizontal')
-                            div(class='control-group')
-                                label(class='control-label') 年龄段
-                                div(class='controls')
-                                    input(type='text', class='input-mini', disabled='disabled', value='库存数')
-                                    input(type='text', class='input-mini', disabled='disabled', style='margin-left:#{margin_left};', value='增减')
-                        - var details = JSON.parse(mdl.model_details);
-                        - for (var j in details)
-                            - counter++;
-                            form(id='form_model_update_#{counter}', method='post', action='/goods/model_update', class='form-horizontal')
-                                div(class='control-group')
-                                    label(class='control-label') #{j}
-                                    div(class='controls')
-                                        input(type='text', style='display:none;opacity:0', name='model_id', value='#{mdl.id}')
-                                        input(type='text', style='display:none;opacity:0', name='key', value='#{j}')
-                                        input(id='input_kucun_#{counter}', type='number', class='input-mini', disabled='disabled', name='kucun', value='#{details[j]}')
-                                        input(id='input_delta_#{counter}', type='number', class='input-mini', style='margin-left:#{margin_left}', name='delta', value=0)
-                                        button(class='btn btn-small btn-primary', type='submit', onclick='xhrModelUpdate(#{counter})', style='margin-left:#{margin_left};') 修改
-                                        span(id='res_model_update_#{counter}', style='margin-left:10px;')
-                        - counter++;
-                        form(id='form_model_add_#{counter}', class='form-horizontal', method='post', action='/goods/model_add')
-                            div(class='control-group')
-                                div(class='controls')
-                                    input(type='text', style='display:none;opacity:0', name='model_id', value='#{mdl.id}')
-                                    input(type='text', class='input-mini', name='key', value='年龄段')
-                                    input(type='number', class='input-mini', style='margin-left:#{margin_left}', name='kucun', value='库存数')
-                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrModelAdd(#{counter})', style='margin-left:#{margin_left};') 新增
-                                    span(id='res_model_add_#{counter}', style='margin-left:10px;')
+                    div(class='row')
+                        div(class='span3 bs-docs-sidebar')
+                            ul(class='nav nav-list bs-docs-sidenav affix-top')
+                                li
+                                    a(href='#section_model_create') 新建款式
+                                        i(class='icon-chevron-right')
+                                - for (var i = 0; i < models.length; ++i)
+                                    - var mdl = models[i];
+                                        li
+                                            a(href='#section_#{mdl.id}') #{mdl.model_name}
+                                                i(class='icon-chevron-right')
+                        div(class='span9')
+                            - if (!goods.length)
+                                h1
+                                    a(href='/goods/create') 请先添加商品
+                            - else
+                                section#section_model_create
+                                    div(class='page-header')
+                                        h1(class='text-success') 新建款式
+                                    form(id='form_model_create', method='post', action='/goods/model_create', class='form-horizontal')
+                                        div(class='control-group')
+                                            label(class='control-label') 款式名称
+                                            div(class='controls')
+                                                input(type='text', style='display:none;opacity:0', name='gid', value='#{gid}')
+                                                input(type='text', class='input-xlarge', name='model_name')
+                                                button(class='btn btn-small btn-primary', type='submit', onclick='xhrModelCreate()', style='margin-left:#{margin_left};') 创建
+                                                span(id='res_model_create', style='margin-left:10px;')
+                            - var counter = 0;
+                            - for (var i = 0; i < models.length; ++i)
+                                - var mdl = models[i];
+                                section(id='section_#{mdl.id}')
+                                    div(class='page-header')
+                                        h1(class='text-success') #{mdl.model_name}
+                                    form(class='form-horizontal')
+                                        div(class='control-group')
+                                            label(class='control-label') 年龄段
+                                            div(class='controls')
+                                                input(type='text', class='input-mini', disabled='disabled', value='库存数')
+                                                input(type='text', class='input-mini', disabled='disabled', style='margin-left:#{margin_left};', value='增减')
+                                    - var details = JSON.parse(mdl.model_details);
+                                    - for (var j in details)
+                                        - counter++;
+                                        form(id='form_model_update_#{counter}', method='post', action='/goods/model_update', class='form-horizontal')
+                                            div(class='control-group')
+                                                label(class='control-label') #{j}
+                                                div(class='controls')
+                                                    input(type='text', style='display:none;opacity:0', name='model_id', value='#{mdl.id}')
+                                                    input(type='text', style='display:none;opacity:0', name='key', value='#{j}')
+                                                    input(id='input_kucun_#{counter}', type='number', class='input-mini', disabled='disabled', name='kucun', value='#{details[j]}')
+                                                    input(id='input_delta_#{counter}', type='number', class='input-mini', style='margin-left:#{margin_left}', name='delta', value=0)
+                                                    button(class='btn btn-small btn-primary', type='submit', onclick='xhrModelUpdate(#{counter})', style='margin-left:#{margin_left};') 修改
+                                                    span(id='res_model_update_#{counter}', style='margin-left:10px;')
+                                    - counter++;
+                                    form(id='form_model_add_#{counter}', class='form-horizontal', method='post', action='/goods/model_add')
+                                        div(class='control-group')
+                                            div(class='controls')
+                                                input(type='text', style='display:none;opacity:0', name='model_id', value='#{mdl.id}')
+                                                input(type='text', class='input-mini', name='key', placeholder='年龄段')
+                                                input(type='number', class='input-mini', style='margin-left:#{margin_left}', name='kucun', placeholder='库存数')
+                                                button(class='btn btn-small btn-primary', type='submit', onclick='xhrModelAdd(#{counter})', style='margin-left:#{margin_left};') 新增
+                                                span(id='res_model_add_#{counter}', style='margin-left:10px;')
+        script(src="/javascripts/bootstrap-transition.js")
+        script(src="/javascripts/bootstrap-alert.js")
+        script(src="/javascripts/bootstrap-modal.js")
+        script(src="/javascripts/bootstrap-dropdown.js")
+        script(src="/javascripts/bootstrap-scrollspy.js")
+        script(src="/javascripts/bootstrap-tab.js")
+        script(src="/javascripts/bootstrap-tooltip.js")
+        script(src="/javascripts/bootstrap-popover.js")
+        script(src="/javascripts/bootstrap-button.js")
+        script(src="/javascripts/bootstrap-collapse.js")
+        script(src="/javascripts/bootstrap-carousel.js")
+        script(src="/javascripts/bootstrap-typeahead.js")
+        script(src="/javascripts/bootstrap-affix.js")
+        script(src="/javascripts/holder.js")
+        script(src="/javascripts/prettify.js")
+        script(src="/javascripts/application.js")

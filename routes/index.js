@@ -61,7 +61,7 @@ exports.index = function(req, res) {
         res.redirect('/login');
         return;
     }
-    res.redirect('/goods/show');
+    res.redirect('/goods/manage');
 };
 
 exports.goodsManageDo = function(req, res) {
@@ -73,6 +73,7 @@ exports.goodsManageDo = function(req, res) {
     var p = req.body;
     console.log(p);
     if (action == 'create') {
+        // 创建商品，如女圆帽
         db.goodsCreate([p.name, getUserId(req)], function(dup) {
             if (dup) {
                 res.json({err:1, msg:'商品[' + p.name + ']已经存在'});
@@ -81,6 +82,7 @@ exports.goodsManageDo = function(req, res) {
             }
         });
     } else if (action == 'model_create') {
+        // 创建款式，如牵牛花
         db.goodsModelCreate([p.gid, p.model_name, getUserId(req)], function(dup) {
             if (dup) {
                 res.json({err:0, msg:'[' + p.model_name + '] 已经存在'});
@@ -89,8 +91,13 @@ exports.goodsManageDo = function(req, res) {
             }
         });
     } else if (action == 'model_add') {
+        // 添加年龄段，如1-2Y
         if (isNaN(parseInt(p.kucun))) {
             res.json({err:1, msg:'库存必须为数字'});
+            return;
+        }
+        if (p.key.trim().length < 1) {
+            res.json({err:1, msg:'年龄段不能为空'});
             return;
         }
         db.getGoodModel([p.model_id], function(rows) {
@@ -107,6 +114,7 @@ exports.goodsManageDo = function(req, res) {
             }
         });
     } else if (action == 'model_update') {
+        // 修改库存数量
         if (isNaN(parseInt(p.delta))) {
             res.json({err:1, msg:'库存增减值[' + p.delta + ']不是数字'});
             return;
