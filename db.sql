@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `good_model`;
 CREATE TABLE `good_model` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `good_id` int(10) unsigned NOT NULL,
-  `model_name` varchar(255) NOT NULL,
+  `model_name` varchar(255) CHARACTER SET utf8 NOT NULL,
   `model_details` blob,
   `created_at` datetime NOT NULL,
   `created_by` int(10) unsigned NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE `good_model` (
   `updated_by` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uidx_good_id_model_name` (`good_id`,`model_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,7 +61,7 @@ CREATE TABLE `goods` (
   `updated_by` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,4 +110,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-06-11  1:45:44
+-- Dump completed on 2013-06-11 20:01:12
