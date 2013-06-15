@@ -6,7 +6,7 @@ exports.init = function() {
         host: 'localhost',
         port: 3306,
         user: 'root',
-        password: '',
+        password: 'success',
         database: 'jojo',
     });
     conn.connect();
@@ -24,7 +24,7 @@ exports.verifyUser = function(params, cb) {
 };
 
 exports.getGoods = function(cb) {
-    var sql = 'SELECT * FROM goods ORDER BY name';
+    var sql = 'SELECT * FROM goods ORDER BY substring(name,7)';
     console.log(sql);
     conn.query(sql, function(err, results, fields) {
         if (err) {
