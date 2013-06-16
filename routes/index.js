@@ -83,7 +83,7 @@ exports.goodsManageDo = function(req, res) {
         });
     } else if (action == 'model_create') {
         // 创建款式，如牵牛花
-        db.goodsModelCreate([p.gid, p.model_name, getUserId(req)], function(dup) {
+        db.goodsModelCreate([p.gid, p.model_name, p.model_pic, getUserId(req)], function(dup) {
             if (dup) {
                 res.json({err:0, msg:'[' + p.model_name + '] 已经存在'});
             } else {

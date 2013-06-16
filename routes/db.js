@@ -74,7 +74,7 @@ exports.goodsCreate = function(params, cb) {
 };
 
 exports.goodsModelCreate = function(params, cb) {
-    var sql = 'INSERT INTO good_model SET good_id = ?, model_name = ?, model_details = "{}", created_at = now(), created_by = ?';
+    var sql = 'INSERT INTO good_model SET good_id = ?, model_name = ?, model_pic = ?, model_details = "{}", created_at = now(), created_by = ?';
     console.log(sql);
     conn.query(sql, params, function(err, info) {
         if (err) {
