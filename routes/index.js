@@ -74,6 +74,10 @@ exports.goodsManageDo = function(req, res) {
     console.log(p);
     if (action == 'create') {
         // 创建商品，如女圆帽
+        if (p.name.length < 1) {
+            res.json({err:1, msg:'商品名称不能为空'});
+            return;
+        }
         db.goodsCreate([p.name, getUserId(req)], function(dup) {
             if (dup) {
                 res.json({err:1, msg:'商品[' + p.name + ']已经存在'});
@@ -83,9 +87,13 @@ exports.goodsManageDo = function(req, res) {
         });
     } else if (action == 'model_create') {
         // 创建款式，如牵牛花
+        if (p.model_name.length < 1) {
+            res.json({err:1, msg:'款式名称不能为空'});
+            return;
+        } 
         db.goodsModelCreate([p.gid, p.model_name, p.model_pic, getUserId(req)], function(dup) {
             if (dup) {
-                res.json({err:0, msg:'[' + p.model_name + '] 已经存在'});
+                res.json({err:1, msg:'[' + p.model_name + '] 已经存在'});
             } else {
                 res.json({err:0});
             }

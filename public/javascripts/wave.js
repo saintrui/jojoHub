@@ -29,6 +29,7 @@ function getFormJson(frm) {
 }
 
 function xhrGoodsCreate() {
+    $('#form_goods_create').unbind('submit');
     $('#form_goods_create').bind('submit', function(){
         ajaxSubmit(this, function(data) {
             var err = data['err'];
@@ -51,6 +52,7 @@ function xhrModelAdd(counter) {
     var res_id = '#res_model_add_'+counter;
     $(res_id).attr('class', 'text-info');
     $(res_id).html('please wait...');
+    $('#form_model_add_'+counter).unbind('submit');
     $('#form_model_add_'+counter).bind('submit', function(){
         ajaxSubmit(this, function(data) {
             var err = data['err'];
@@ -72,6 +74,7 @@ function xhrModelUpdate(counter) {
     var res_id = '#res_model_update_'+counter;
     $(res_id).attr('class', 'text-info');
     $(res_id).html('please wait...');
+    $('#form_model_update_'+counter).unbind('submit');
     $('#form_model_update_'+counter).bind('submit', function(){
         ajaxSubmit(this, function(data) {
             var err = data['err'];
@@ -93,6 +96,7 @@ function xhrModelCreate(counter) {
     var res_id = '#res_model_create';
     $(res_id).attr('class', 'text-info');
     $(res_id).html('please wait...');
+    $('#form_model_create').unbind('submit');
     $('#form_model_create').bind('submit', function(){
         ajaxSubmit(this, function(data) {
             var err = data['err'];
@@ -105,83 +109,6 @@ function xhrModelCreate(counter) {
                 $(res_id).html('success');
             }
             return false;
-        });
-        return false;
-    });
-}
-
-function xhrSetting(section) {
-    if ('update_account' == section) {
-        var new_passwd = $('#new_passwd').attr('value');
-        var confirm_passwd = $('#confirm_passwd').attr('value');
-        if (new_passwd != confirm_passwd) {
-            alert('两次输入密码不一样');
-            // avoid really submit
-            $('#form_'+section).bind('submit', function(){
-                return false;
-            });
-            return false;
-        } else if (new_passwd.length == 0) {
-            alert('密码不能为空');
-            // avoid really submit
-            $('#form_'+section).bind('submit', function(){
-                return false;
-            });
-            return false;
-        }
-    }
-    $('#form_'+section).bind('submit', function(){
-        ajaxSubmit(this, 0, function(data) {
-            var err = data['err'];
-            if (err) {
-                alert(data['msg']);
-            } else {
-                $('#res_'+section).css({visibility:'visible'});
-                $('#res_'+section).animate({opacity:1});
-                setTimeout(function() {
-                    $('#res_'+section).animate({opacity:0});
-                }, 3000);
-            }
-        });
-        return false;
-    });
-}
-
-function xhrSendMail(section, prj_info_id) {
-    $('#form_'+section).bind('submit', function(){
-        ajaxSubmit(this, prj_info_id, function(data) {
-            var err = data['err'];
-            if (err) {
-                alert(data['msg']);
-            } else {
-                $('#close_btn_'+section).click();
-            }
-        });
-        return false;
-    });
-}
-
-function xhrFeedback(section) {
-    if ('feedback_del' == section) {
-        if (!confirm('Delete the feedback?')) {
-            $('#form_'+section).bind('submit', function(){
-                return false;
-            });
-            return false;
-        }
-    }
-    $('#form_'+section).bind('submit', function(){
-        ajaxSubmit(this, 0, function(data) {
-            var err = data['err'];
-            if (err) {
-                alert(data['msg']);
-            } else {
-                $('#res_'+section).css({visibility:'visible'});
-                $('#res_'+section).animate({opacity:1});
-                setTimeout(function() {
-                    $('#res_'+section).animate({opacity:0});
-                }, 3000);
-            }
         });
         return false;
     });
