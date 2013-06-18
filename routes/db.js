@@ -102,6 +102,33 @@ exports.goodsModelUpdate = function(params, cb) {
     });
 };
 
+exports.getDailyChangeLogs = function(cb) {
+    var sql = 'SELECT b.display_name, a.changed_at, c.name, d.model_name, a.age, a.delta FROM kucun_change_log AS a, user AS b, goods AS c, good_model AS d WHERE date(changed_at) = curDate() AND a.good_model_id = d.id AND d.good_id = c.id AND a.changed_by = b.id ORDER BY b.id, a.changed_at DESC, c.name, d.model_name, a.age';
+    console.log(sql);
+    conn.query(sql, function(err, results, fields) {
+        if (err) {
+            throw err;
+        }
+        cb(results);
+    });
+};
+
+exports.changeLogCreate = function(params, cb) {
+    var sql = 'INSERT INTO kucun_change_log SET good_model_id = ?, age = ?, delta = ?, changed_by = ?, changed_at = now()';
+    console.log(sql);
+    conn.query(sql, params, function(err, info) {
+        if (err) {
+            if (err.number == mysql.ERROR_DUP_ENTRY) {
+                cb(1);
+                return;
+            } else {
+                console.log(err);
+                throw err;
+            }
+        }
+        cb(0);
+    });
+};
 // old
 exports.reportByTime = function(params, cb) {
     var sql = 'SELECT a.name, DATE_FORMAT(tc_date, "%Y-%m") tc_date, version, version_type FROM product AS a, product_info AS b WHERE a.id = b.product_id AND tc_date >= ? AND tc_date < date_add(?, INTERVAL 1 MONTH) ORDER BY tc_date';

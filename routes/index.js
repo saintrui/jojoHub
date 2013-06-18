@@ -61,7 +61,7 @@ exports.index = function(req, res) {
         res.redirect('/login');
         return;
     }
-    res.redirect('/goods/manage');
+    res.redirect('/goods/report');
 };
 
 exports.goodsManageDo = function(req, res) {
@@ -117,7 +117,9 @@ exports.goodsManageDo = function(req, res) {
             } else {
                 detail[p.key] = parseInt(p.kucun);
                 db.goodsModelUpdate([JSON.stringify(detail), getUserId(req), p.model_id], function() {
-                    res.json({err:0});
+                    db.changeLogCreate([model.id, p.key, p.kucun, getUserId(req)], function() {
+                        res.json({err:0});
+                    });
                 });
             }
         });
@@ -136,7 +138,9 @@ exports.goodsManageDo = function(req, res) {
             } else {
                 detail[p.key] = parseInt(detail[p.key]) + parseInt(p.delta);
                 db.goodsModelUpdate([JSON.stringify(detail), getUserId(req), p.model_id], function() {
-                    res.json({err:0, new_kucun:detail[p.key]});
+                    db.changeLogCreate([model.id, p.key, parseInt(p.delta), getUserId(req)], function() {
+                        res.json({err:0, new_kucun:detail[p.key]});
+                    });
                 });
             }
         });
@@ -152,7 +156,11 @@ exports.goodsManage = function(req, res) {
     }
     var action = req.params.action;
     var query = req.query;
-    if (action == 'create') {
+    if (action == 'report') {
+        db.getDailyChangeLogs(function(rows) {
+            res.render('goods_report', {change_logs:rows});
+        });
+    } else if (action == 'create') {
         db.getGoods(function(rows) {
             console.log(rows);
             res.render('goods_create', {goods:rows});
