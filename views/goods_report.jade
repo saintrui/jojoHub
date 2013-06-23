@@ -6,29 +6,32 @@ block content
     div(class='container-fluid')
         div(class='row-fluid')
             div(class='span9')
-                - var now_tmp = new Date();
-                - var now_date = '' + now_tmp.getFullYear() + '-' + (now_tmp.getMonth() + 1) + '-' + now_tmp.getDate();
-                h3 库存变化 #{now_date}
-                table(class='table table-bordered table-hover')
-                    thead
-                        tr
-                            td 更改人
-                            td 更改时间
-                            td 商品名称
-                            td 款式名称
-                            td 年龄段
-                            td 库存变化
-                    tbody
-                        - for (var i = 0; i < change_logs.length; ++i)
-                            - var cl = change_logs[i];
+                h2 过去7天的库存变化
+                - if (!change_logs.length)
+                    h3(class='text-warning') 你已经很久没有更新库存了
+                - var date = '';
+                - for (var i = 0; i < change_logs.length;)
+                    - date = change_logs[i].changed_date
+                    h3 #{date}
+                    table(class='table table-bordered table-hover')
+                        thead
                             tr
-                                td #{cl.display_name}
-                                td #{cl.changed_at}
-                                td #{cl.name}
-                                td #{cl.model_name}
-                                td #{cl.age}
-                                td #{cl.delta}
-
-
-
-
+                                td 更改人
+                                td 更改时间
+                                td 商品名称
+                                td 款式名称
+                                td 年龄段
+                                td 库存变化
+                        - while (i < change_logs.length && change_logs[i].changed_date == date)
+                            - var cl = change_logs[i];
+                            tbody
+                                    tr
+                                        td #{cl.display_name}
+                                        - var now_tmp = new Date(cl.changed_at);
+                                        - var now_datetime = '' + now_tmp.getFullYear() + '-' + (now_tmp.getMonth() + 1) + '-' + now_tmp.getDate() + ' ' + now_tmp.getHours() + ':' + now_tmp.getMinutes() + ':' + now_tmp.getSeconds();
+                                        td #{now_datetime}
+                                        td #{cl.name}
+                                        td #{cl.model_name}
+                                        td #{cl.age}
+                                        td #{cl.delta}
+                            - i++

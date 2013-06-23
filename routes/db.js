@@ -103,7 +103,7 @@ exports.goodsModelUpdate = function(params, cb) {
 };
 
 exports.getDailyChangeLogs = function(cb) {
-    var sql = 'SELECT b.display_name, a.changed_at, c.name, d.model_name, a.age, a.delta FROM kucun_change_log AS a, user AS b, goods AS c, good_model AS d WHERE date(changed_at) = curDate() AND a.good_model_id = d.id AND d.good_id = c.id AND a.changed_by = b.id ORDER BY b.id, a.changed_at DESC, c.name, d.model_name, a.age';
+    var sql = 'SELECT b.display_name, date_format(a.changed_at, "%Y-%m-%d") AS changed_date, a.changed_at, c.name, d.model_name, a.age, a.delta FROM kucun_change_log AS a, user AS b, goods AS c, good_model AS d WHERE date(changed_at) > date_add(curDate(), interval -7 day) AND a.good_model_id = d.id AND d.good_id = c.id AND a.changed_by = b.id ORDER BY a.changed_at DESC, b.id, c.name, d.model_name, a.age';
     console.log(sql);
     conn.query(sql, function(err, results, fields) {
         if (err) {

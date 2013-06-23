@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.29, for debian-linux-gnu (i686)
+-- MySQL dump 10.13  Distrib 5.5.31, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: jojo
 -- ------------------------------------------------------
--- Server version	5.5.29-0ubuntu1
+-- Server version	5.5.31-0ubuntu0.12.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,6 +26,7 @@ CREATE TABLE `good_model` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `good_id` int(10) unsigned NOT NULL,
   `model_name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `model_pic` varchar(1024) DEFAULT NULL,
   `model_details` blob,
   `created_at` datetime NOT NULL,
   `created_by` int(10) unsigned NOT NULL,
@@ -33,17 +34,8 @@ CREATE TABLE `good_model` (
   `updated_by` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uidx_good_id_model_name` (`good_id`,`model_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `good_model`
---
-
-LOCK TABLES `good_model` WRITE;
-/*!40000 ALTER TABLE `good_model` DISABLE KEYS */;
-/*!40000 ALTER TABLE `good_model` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `goods`
@@ -61,17 +53,26 @@ CREATE TABLE `goods` (
   `updated_by` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `goods`
+-- Table structure for table `kucun_change_log`
 --
 
-LOCK TABLES `goods` WRITE;
-/*!40000 ALTER TABLE `goods` DISABLE KEYS */;
-/*!40000 ALTER TABLE `goods` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `kucun_change_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `kucun_change_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `good_model_id` int(10) unsigned NOT NULL,
+  `age` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `delta` int(10) NOT NULL,
+  `changed_by` int(10) unsigned NOT NULL,
+  `changed_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `user`
@@ -90,16 +91,6 @@ CREATE TABLE `user` (
   UNIQUE KEY `name` (`display_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'wsrzju@gmail.com','260ca9dd8a4577fc00b7bd5810298076','吴升瑞','admin'),(2,'175615624@qq.com','202cb962ac59075b964b07152d234b70','陈观兰','manage'),(3,'','','陈葛军','manage');
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -110,4 +101,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-06-11 20:01:12
+-- Dump completed on 2013-06-23  9:58:53
